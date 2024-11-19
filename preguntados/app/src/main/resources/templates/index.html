@@ -1,0 +1,197 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="js/Winwheel.min.js"></script>
+    <script src="js/TweenMax.min.js"></script>
+    <script src="js/jQuery-2.1.4.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            background-size: cover;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    
+        .wheel-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 600px;
+        }
+    
+        .btn-girar {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            width: 80px; /* Reduce width */
+            height: 80px; /* Make height same as width for a circle */
+            font-size: 16px; /* Adjust font size */
+            color: #fff;
+            background-color: #cacfd2; /* Background color for button */
+            border: none;
+            border-radius: 50%; /* Make it round */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            outline: none; /* Remove focus outline */
+        }
+    
+        /* Remove Bootstrap's button effect */
+        .btn-girar:active, .btn-girar:focus {
+            background-color: #cacfd2 !important; /* Prevent Bootstrap from applying styles */
+            box-shadow: none !important; /* Remove any shadow effect */
+        }
+    
+        /* Remove focus outline (important for accessibility but can be adjusted if needed) */
+        .btn-girar:focus {
+            outline: none;
+        }
+    
+        /* Prevent button from showing "focus" behavior */
+        .btn-girar:focus-visible {
+            outline: none;
+        }
+    
+        .overlay-category {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            font-size: 3em;
+            text-align: center;
+            z-index: 10;
+            display: none; /* Initially hidden */
+        }
+    
+        canvas {
+            display: block;
+        }
+    </style>
+    >
+    
+    
+</head>
+<body>
+<div class="wheel-container">
+    <button class="btn btn-success btn-lg btn-girar" onclick="miRuleta.startAnimation();">Girar</button>
+    <canvas id="canvas" height="600px" width="600px"></canvas>
+</div>
+
+<!-- Overlay to display the selected category -->
+<div class="overlay-category" id="overlayCategory">
+    <div id="categoryText">Categoría</div>
+</div>
+
+<script>
+    var miRuleta = new Winwheel({
+    'numSegments' : 6,
+    'outerRadius' : 270,
+    'segments': [
+
+        {'fillStyle': '#a9ec2c', 'text': 'Ciencia'},         // Dorado vibrante
+        {'fillStyle': '#ec2c7b', 'text': 'Entretenimiento'}, // Verde brillante
+        {'fillStyle': '#9b2cec', 'text': 'Geografia'},       // Naranja intenso
+        {'fillStyle': '#ffa08b', 'text': 'Historia'},        // Rojo brillante
+        {'fillStyle': '#ec8f2c', 'text': 'Deporte'},         // Morado vibrante
+        {'fillStyle': '#2ceca0', 'text': 'Tecnologia'}       // Azul brillante
+    ],
+    'animation': {
+        'type': 'spinToStop',
+        'duration': 6,
+        'callbackFinished': 'Mensaje()',
+        'callbackAfter': 'dibujarIndicador()'
+    }
+    });
+
+
+    function dibujarIndicador() {
+        var ctx = miRuleta.ctx;
+        ctx.strokeStyle = 'navy';
+        ctx.fillStyle = 'black';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(300, 0);
+        ctx.lineTo(320, 0);
+        ctx.lineTo(300, 40);
+        ctx.lineTo(280, 0);
+        ctx.stroke();
+        ctx.fill();
+    }
+
+    dibujarIndicador();
+
+    function Mensaje() {
+        var SegmentoSeleccionado = miRuleta.getIndicatedSegment();
+        var categoria = SegmentoSeleccionado.text;
+
+        // Show selected category in overlay
+        document.getElementById("categoryText").innerText = categoria;
+        document.getElementById("overlayCategory").style.display = "flex";
+
+        // Hide overlay after a few seconds
+        setTimeout(function() {
+            document.getElementById("overlayCategory").style.display = "none";
+        }, 3000); // Hide after 3 seconds
+
+        // AJAX request to fetch question from backend
+        $.ajax({
+            url: '/getQuestion', // Spring Boot endpoint
+            type: 'POST',
+            data: { category: categoria },
+            success: function(response) {
+                console.log("Pregunta generada: " + response);
+                switch (response) {
+                    case 'Pregunta 1':
+                        $('#myModal1').modal('show');
+                        break;
+                    case 'Pregunta 2':
+                        $('#myModal2').modal('show');
+                        break;
+                    case 'Pregunta 3':
+                        $('#myModal3').modal('show');
+                        break;
+                    case 'Pregunta 4':
+                        $('#myModal4').modal('show');
+                        break;
+                    case 'Pregunta 5':
+                        $('#myModal5').modal('show');
+                        break;
+                    default:
+                        console.log("Pregunta no encontrada.");
+                }
+            },
+            error: function(error) {
+                console.log("Error:", error);
+                console.log("No se pudo obtener la pregunta.");
+            }
+        });
+
+        miRuleta.stopAnimation(false);
+        miRuleta.rotationAngle = 0;
+        miRuleta.draw();
+        dibujarIndicador();
+    }
+</script>
+
+<!-- *********************** SCRIPTS *********************************-->
+<script src="js/bootstrap.js"></script>
+<!-- *********************** SCRIPTS *********************************-->
+</body>
+</html>

@@ -1,0 +1,51 @@
+# Compiled class files
+*.class
+
+# Log files
+*.log
+spring.log
+
+# Temporary files
+*.tmp
+
+# Maven specific files
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Gradle specific files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE specific files
+*.iml
+.idea/
+*.swp
+*.swo
+*.bak
+*.orig
+*.tmp
+.vscode/
+.project
+.settings/
+.classpath
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables and secrets
+.env
+*.properties
+
+# Other files to ignore
+hs_err_pid*
+
+/Diagrama_de_clases
+*.pdf
+*.xml
+*.docx
