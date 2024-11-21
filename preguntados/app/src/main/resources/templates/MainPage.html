@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio de sesión</title>
+    <title>Pagina principal</title>
     <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
 </head>
 <body>
     <h2>Iniciar sesión</h2>
-    <form action="/login" method="post">
+    <form action="/MainPage" method="post">
         <div>
             <label for="username">Usuario:</label>
             <input type="text" id="username" name="username" required/>
@@ -18,5 +18,8 @@
         </div>
         <button type="submit">Ingresar</button>
     </form>
+    <a th:href="@{/ruleta}">
+        <button type="button">Jugar</button>
+    </a>
 </body>
 </html>
