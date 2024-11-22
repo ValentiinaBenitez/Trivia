@@ -98,19 +98,42 @@
 <div class="overlay-category" id="overlayCategory">
     <div id="categoryText">Categoría</div>
 </div>
+<!-- Modal para mostrar la pregunta -->
+<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="questionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questionModalLabel">Pregunta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="questionText">Cargando pregunta...</p>
+                <ul id="answersList" style="list-style-type: none; padding: 0;">
+                    <!-- Respuestas se generarán dinámicamente -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     var miRuleta = new Winwheel({
-    'numSegments' : 6,
+    'numSegments' : 7,
     'outerRadius' : 270,
     'segments': [
 
-        {'fillStyle': '#a9ec2c', 'text': 'Ciencia'},         // Dorado vibrante
-        {'fillStyle': '#ec2c7b', 'text': 'Entretenimiento'}, // Verde brillante
-        {'fillStyle': '#9b2cec', 'text': 'Geografia'},       // Naranja intenso
-        {'fillStyle': '#ffa08b', 'text': 'Historia'},        // Rojo brillante
-        {'fillStyle': '#ec8f2c', 'text': 'Deporte'},         // Morado vibrante
-        {'fillStyle': '#2ceca0', 'text': 'Tecnologia'}       // Azul brillante
+        {'fillStyle': '#a9ec2c', 'text': 'Ciencia'},         
+        {'fillStyle': '#ec2c7b', 'text': 'Entretenimiento'}, 
+        {'fillStyle': '#9b2cec', 'text': 'Geografia'},       
+        {'fillStyle': '#ffa08b', 'text': 'Historia'},       
+        {'fillStyle': '#ec8f2c', 'text': 'Deporte'},         
+        {'fillStyle': '#2ceca0', 'text': 'Tecnologia'},   
+        {'fillStyle': '#2ceca0', 'text': 'Arte'}      
     ],
     'animation': {
         'type': 'spinToStop',
@@ -138,56 +161,57 @@
     dibujarIndicador();
 
     function Mensaje() {
-        var SegmentoSeleccionado = miRuleta.getIndicatedSegment();
-        var categoria = SegmentoSeleccionado.text;
+    var SegmentoSeleccionado = miRuleta.getIndicatedSegment();
+    var categoria = SegmentoSeleccionado.text;
 
-        // Show selected category in overlay
-        document.getElementById("categoryText").innerText = categoria;
-        document.getElementById("overlayCategory").style.display = "flex";
+    // AJAX request para obtener la pregunta
+    $.ajax({
+        url: `/api/pregunta/${categoria}`, // Endpoint de tu backend
+        type: 'GET',
+        success: function(response) {
+            // Dividir la respuesta en pregunta y opciones
+            const lines = response.split('\n');
+            const pregunta = lines[0]; // Primera línea es la pregunta
+            const respuestas = lines.slice(1, 5); // Selecciona solo las primeras 4 respuestas
 
-        // Hide overlay after a few seconds
-        setTimeout(function() {
-            document.getElementById("overlayCategory").style.display = "none";
-        }, 3000); // Hide after 3 seconds
+            // Mostrar la pregunta en el modal
+            document.getElementById("questionText").innerText = pregunta;
 
-        // AJAX request to fetch question from backend
-        $.ajax({
-            url: '/getQuestion', // Spring Boot endpoint
-            type: 'POST',
-            data: { category: categoria },
-            success: function(response) {
-                console.log("Pregunta generada: " + response);
-                switch (response) {
-                    case 'Pregunta 1':
-                        $('#myModal1').modal('show');
-                        break;
-                    case 'Pregunta 2':
-                        $('#myModal2').modal('show');
-                        break;
-                    case 'Pregunta 3':
-                        $('#myModal3').modal('show');
-                        break;
-                    case 'Pregunta 4':
-                        $('#myModal4').modal('show');
-                        break;
-                    case 'Pregunta 5':
-                        $('#myModal5').modal('show');
-                        break;
-                    default:
-                        console.log("Pregunta no encontrada.");
-                }
-            },
-            error: function(error) {
-                console.log("Error:", error);
-                console.log("No se pudo obtener la pregunta.");
-            }
-        });
+            // Limpiar las respuestas anteriores
+            const answersList = document.getElementById("answersList");
+            answersList.innerHTML = '';
 
-        miRuleta.stopAnimation(false);
-        miRuleta.rotationAngle = 0;
-        miRuleta.draw();
-        dibujarIndicador();
-    }
+            // Agregar respuestas como botones interactivos al modal
+            respuestas.forEach(respuesta => {
+                const listItem = document.createElement('li');
+                const button = document.createElement('button');
+                button.textContent = respuesta;
+                button.classList.add('btn', 'btn-primary', 'btn-block');
+                button.style.marginTop = '10px'; // Espaciado entre botones
+                button.onclick = function() {
+                    alert("Seleccionaste: " + respuesta);
+                    // Aquí puedes añadir lógica para verificar la respuesta correcta
+                };
+                listItem.appendChild(button);
+                answersList.appendChild(listItem);
+            });
+
+            // Mostrar el modal
+            $('#questionModal').modal('show');
+        },
+        error: function(error) {
+            console.error("Error al obtener la pregunta:", error);
+            alert("No se pudo obtener la pregunta. Por favor, intenta nuevamente.");
+        }
+    });
+
+    miRuleta.stopAnimation(false);
+    miRuleta.rotationAngle = 0;
+    miRuleta.draw();
+    dibujarIndicador();
+}
+
+
 </script>
 
 <!-- *********************** SCRIPTS *********************************-->

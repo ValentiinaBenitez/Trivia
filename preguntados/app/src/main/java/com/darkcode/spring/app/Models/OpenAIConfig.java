@@ -8,14 +8,14 @@ public class OpenAIConfig {
     @Value("${openai.api.key}")
     private String apiKey;
 
-    // @Value("${openai.api.url}")  ESTA COMENTADO PORQUE HAY QUE GENERAR LA API KEY Y HACER LA CONEXION
-    // private String apiUrl;
+    @Value("${openai.api.url}")  
+    private String apiUrl;
 
     public String getApiKey() {
         return apiKey;
     }
 
-   // public String getApiUrl() {
-   //     return apiUrl;
-   // }
+   public String getApiUrl() {
+     return apiUrl;
+   }
 }
