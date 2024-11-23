@@ -104,18 +104,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="questionModalLabel">Pregunta</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <p id="questionText">Cargando pregunta...</p>
                 <ul id="answersList" style="list-style-type: none; padding: 0;">
                     <!-- Respuestas se generarán dinámicamente -->
                 </ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -164,37 +158,76 @@
     var SegmentoSeleccionado = miRuleta.getIndicatedSegment();
     var categoria = SegmentoSeleccionado.text;
 
-    // AJAX request para obtener la pregunta
     $.ajax({
-        url: `/api/pregunta/${categoria}`, // Endpoint de tu backend
+        url: `/api/pregunta/${categoria}`, 
         type: 'GET',
         success: function(response) {
-            // Dividir la respuesta en pregunta y opciones
             const lines = response.split('\n');
-            const pregunta = lines[0]; // Primera línea es la pregunta
-            const respuestas = lines.slice(1, 5); // Selecciona solo las primeras 4 respuestas
+            const pregunta = lines[0]; 
+            const respuestas = lines.slice(1, 5); 
+            const respuestaCorrecta = lines.find(line => line.startsWith('Respuesta correcta:')).split(':')[1].trim();
 
-            // Mostrar la pregunta en el modal
             document.getElementById("questionText").innerText = pregunta;
 
-            // Limpiar las respuestas anteriores
             const answersList = document.getElementById("answersList");
             answersList.innerHTML = '';
 
-            // Agregar respuestas como botones interactivos al modal
-            respuestas.forEach(respuesta => {
-                const listItem = document.createElement('li');
-                const button = document.createElement('button');
-                button.textContent = respuesta;
-                button.classList.add('btn', 'btn-primary', 'btn-block');
-                button.style.marginTop = '10px'; // Espaciado entre botones
-                button.onclick = function() {
-                    alert("Seleccionaste: " + respuesta);
-                    // Aquí puedes añadir lógica para verificar la respuesta correcta
-                };
-                listItem.appendChild(button);
-                answersList.appendChild(listItem);
-            });
+            respuestas.forEach((respuesta) => {
+    const listItem = document.createElement('li');
+    const button = document.createElement('button');
+    button.textContent = respuesta;
+    button.classList.add('btn', 'btn-primary', 'btn-block');
+    button.style.marginTop = '10px';
+
+    const feedback = document.createElement('p');
+            feedback.style.marginTop = '20px';
+        feedback.style.fontWeight = 'bold';
+
+        button.onclick = function() {
+    const buttons = document.querySelectorAll('#answersList button');
+    buttons.forEach(btn => btn.disabled = true);
+
+    let feedback = document.getElementById('feedbackMessage');
+    if (!feedback) {
+        feedback = document.createElement('p'); 
+        feedback.id = 'feedbackMessage';
+        feedback.style.marginTop = '20px';
+        feedback.style.fontWeight = 'bold';
+        feedback.style.fontSize = '16px'; 
+        feedback.style.textAlign = 'center'; 
+        const modalBody = document.querySelector('.modal-body');
+        modalBody.appendChild(feedback); 
+    }
+
+    if (respuesta.startsWith(respuestaCorrecta)) {
+        feedback.textContent = "¡Correcto! 🎉";
+        feedback.style.color = 'green';
+    } else {
+        feedback.textContent = "Incorrecto. La respuesta correcta es: " + respuestaCorrecta;
+        feedback.style.color = 'red';
+    }
+
+    document.getElementById("questionText").style.display = 'block';
+    document.getElementById("answersList").style.display = 'block';
+
+    setTimeout(() => {
+        $('#questionModal').modal('hide'); 
+        feedback.remove(); 
+        miRuleta.stopAnimation(false);
+        miRuleta.rotationAngle = 0;
+        miRuleta.draw();
+        dibujarIndicador(); 
+    }, 3000); 
+};
+
+
+
+
+
+    listItem.appendChild(button);
+    answersList.appendChild(listItem);
+});
+
 
             // Mostrar el modal
             $('#questionModal').modal('show');

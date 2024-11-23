@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Menú</title>
+</head>
+<body>
+    <h1>Bienvenidos</h1>
+    <a th:href="@{/ruleta}">
+        <button type="button">Juego individual</button>
+    </a>
+    <a th:href="@{}">
+        <button type="button">Juego multijugador</button>
+    </a>
+    <a th:href="@{/MainPage}">
+        <button type="button">Cerrar sesión</button>
+    </a>
+    
+</body>
+</html>
