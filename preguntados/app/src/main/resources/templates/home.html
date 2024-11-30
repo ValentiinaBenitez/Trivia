@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Bienvenidos</h1>
-    <a th:href="@{/ruleta}">
+    <a th:href="@{/ruleta(username=${usuario.username})}">
         <button type="button">Juego individual</button>
     </a>
     <a th:href="@{multijugador}">
@@ -18,3 +18,4 @@
     
 </body>
 </html>
+

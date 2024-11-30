@@ -24,17 +24,24 @@ public class LoginController {
     public String processLogin(@RequestParam String username, @RequestParam String password, Model model) {
         Usuario usuario = usuarioRepository.findByUsername(username);
         if (usuario != null && usuario.getPassword().equals(password)) {
-            // Login exitoso
-            return "redirect:/home"; // Redirige a la página principal
+            model.addAttribute("usuario", usuario);
+            return "redirect:/home?username=" + username; 
         } else {
-            // Login fallido
             model.addAttribute("error", "Usuario o contraseña incorrectos");
             return "MainPage";
         }
     }
+    
 
     @GetMapping("/home")
-    public String homePage() {
-        return "home"; // Retorna el archivo home.html
+    public String homePage(@RequestParam String username, Model model) {
+    Usuario usuario = usuarioRepository.findByUsername(username);
+    if (usuario != null) {
+        model.addAttribute("usuario", usuario);
+        return "home"; 
+    } else {
+        return "redirect:/MainPage";
     }
+}
+
 }

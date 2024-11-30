@@ -18,5 +18,6 @@ public class PreguntaController {
     public String obtenerPregunta(@PathVariable String categoria) throws Exception {
         return openAIService.generarPregunta(categoria);
     }
+    
 }
 

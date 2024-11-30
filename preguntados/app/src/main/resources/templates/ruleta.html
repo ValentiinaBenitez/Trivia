@@ -84,11 +84,15 @@
             display: block;
         }
     </style>
-    >
     
     
 </head>
 <body>
+    <div class="user-info">
+        <h3>Bienvenido, <span th:text="${usuario.username}"></span>!</h3>
+        <p>Puntos: <span id="userPoints" th:text="${usuario.puntos}"></span></p>
+    </div>
+    
 <div class="wheel-container">
     <button class="btn btn-success btn-lg btn-girar" onclick="miRuleta.startAnimation();">Girar</button>
     <canvas id="canvas" height="600px" width="600px"></canvas>
@@ -202,23 +206,46 @@
     if (respuesta.startsWith(respuestaCorrecta)) {
         feedback.textContent = "¡Correcto! 🎉";
         feedback.style.color = 'green';
+
+        // Incrementar el puntaje en el frontend
+        const puntosElemento = document.getElementById("userPoints");
+        let puntosActuales = parseInt(puntosElemento.textContent, 10); // Convertir texto a número
+        puntosElemento.textContent = puntosActuales + 1; // Incrementar el puntaje
+
     } else {
         feedback.textContent = "Incorrecto. La respuesta correcta es: " + respuestaCorrecta;
         feedback.style.color = 'red';
     }
-
-    document.getElementById("questionText").style.display = 'block';
-    document.getElementById("answersList").style.display = 'block';
-
     setTimeout(() => {
-        $('#questionModal').modal('hide'); 
-        feedback.remove(); 
-        miRuleta.stopAnimation(false);
-        miRuleta.rotationAngle = 0;
-        miRuleta.draw();
-        dibujarIndicador(); 
-    }, 3000); 
+ 
+    $('#questionModal').modal('hide');
+   
+    const modalElement = document.getElementById('questionModal');
+    modalElement.classList.remove('show');
+    modalElement.style.display = 'none';
+
+  
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+
+    // Limpiar feedback
+    feedback.remove();
+
+    // Reiniciar ruleta
+    miRuleta.stopAnimation(false);
+    miRuleta.rotationAngle = 0;
+    miRuleta.draw();
+    dibujarIndicador();
+}, 3000);
+
 };
+
 
 
 
@@ -228,8 +255,6 @@
     answersList.appendChild(listItem);
 });
 
-
-            // Mostrar el modal
             $('#questionModal').modal('show');
         },
         error: function(error) {
