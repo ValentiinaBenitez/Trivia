@@ -2,31 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Pagina principal</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
+    <title>Página de Inicio de Sesión</title>
 </head>
 <body>
-    <h2>Iniciar sesión</h2>
-    <form action="/MainPage" method="post">
-        <div>
-            <label for="username">Usuario:</label>
-            <input type="text" id="username" name="username" required/>
-        </div>
-        <div>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" required/>
-        </div>
+    <h2>Iniciar Sesión</h2>
+    <form th:action="@{/login}" method="post">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
         <button type="submit">Ingresar</button>
     </form>
 
-    <!-- Botón para registrarse -->
-    <div style="margin-top: 20px;">
-        <form action="/registrarse" method="get">
-            <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                Registrarse
-            </button>
-        </form>
+    <div>
+        <p th:if="${param.error}" style="color: red;">Usuario o contraseña incorrectos</p>
+        <p th:if="${param.logout}" style="color: green;">Has cerrado sesión correctamente</p>
+    </div>
+
+    <div>
+        <a href="/registrarse">¿No tienes cuenta? Regístrate</a>
     </div>
 </body>
 </html>
+
 
