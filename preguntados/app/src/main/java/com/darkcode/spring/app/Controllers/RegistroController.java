@@ -5,6 +5,8 @@ import com.darkcode.spring.app.Repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -22,18 +24,20 @@ public class RegistroController {
 
     // Manejar el formulario de registro
     @PostMapping("/registro")
-    public String registrarUsuario(Usuario usuario, Model model) {
-        // Verificar si el nombre de usuario ya está registrado
-        if (usuarioRepository.findByUsername(usuario.getUsername()) != null) {
-            model.addAttribute("error", "El nombre de usuario ya está registrado.");
-            return "registro";
-        }
-
-        // Guardar el usuario en la base de datos
-        usuarioRepository.save(usuario);
-        model.addAttribute("success", "Usuario registrado con éxito.");
-        return "MainPage"; // Redirige a la página de inicio de sesión
+    public String registrarUsuario(@Validated Usuario usuario, BindingResult result, Model model) {
+    if (result.hasErrors()) {
+        return "registro";
     }
+
+    if (usuarioRepository.findByUsername(usuario.getUsername()) != null) {
+        model.addAttribute("error", "El nombre de usuario ya está registrado.");
+        return "registro";
+    }
+
+    usuarioRepository.save(usuario);
+    return "redirect:/MainPage";
+}
+
 
    
 }

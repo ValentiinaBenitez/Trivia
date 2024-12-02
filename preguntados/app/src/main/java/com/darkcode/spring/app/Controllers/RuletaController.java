@@ -1,4 +1,6 @@
 package com.darkcode.spring.app.Controllers;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -14,17 +16,19 @@ public class RuletaController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
     @GetMapping("/ruleta")
-    public String mostrarRuleta(@RequestParam String username, Model model) {
-        Usuario usuario = usuarioRepository.findByUsername(username);
-        if (usuario != null) {
-            model.addAttribute("usuario", usuario); // Incluye el usuario en el modelo
-            return "ruleta"; 
-        } else {
-            return "redirect:/MainPage"; // Redirige si no se encuentra el usuario
-        }
+    public String ruleta(@RequestParam String username, Model model) {
+    Optional<Usuario> optionalUsuario = usuarioRepository.findByUsername(username);
+    if (optionalUsuario.isPresent()) {
+        Usuario usuario = optionalUsuario.get();
+        model.addAttribute("usuario", usuario); // Pasar el objeto 'usuario' al modelo
+        return "ruleta"; // Renderizar la plantilla 'ruleta.html'
+    } else {
+        model.addAttribute("error", "Usuario no encontrado");
+        return "error"; // Mostrar una página de error si el usuario no existe
     }
+}
+
     
     
 

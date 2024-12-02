@@ -109,19 +109,25 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Iniciar sesión</h2>
+        <h2>Iniciar Sesión</h2>
         <form th:action="@{/MainPage}" method="post">
             <label for="username">Usuario:</label>
             <input type="text" id="username" name="username" required>
+            
             <label for="password">Contraseña:</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit">Ingresar</button>
+            
+            <button type="submit">Iniciar Sesión</button>
         </form>
 
-     <br>
-        <div>
-            <a href="/registrarse" class="register-link">¿No tienes cuenta? Regístrate</a>
+        <!-- Mostrar mensaje de error -->
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
         </div>
+        
+        <br>
+        <a href="/registro" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
     </div>
 </body>
+
 </html>

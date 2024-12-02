@@ -15,9 +15,11 @@
 </head>
 <body>
     <div class="user-info">
-            <h3 class="welcome-text">Bienvenido, <span th:text="${usuario.username}"></span>!</h3>
-            <p class="points-text">Puntos: <span id="userPoints" th:text="${usuario.puntos}"></span></p>
-        <button class="menu-button" 
+        <h3 class="welcome-text">Bienvenido, <span th:text="${usuario != null ? usuario.username : 'Invitado'}"></span>!</h3>
+        <p class="points-text">Puntos: <span id="userPoints" th:text="${usuario != null ? usuario.puntos : 0}"></span></p>
+        <div id="user-info" th:data-user-id="${usuario != null ? usuario.id : 0}"></div>
+        
+            <button class="menu-button" 
         th:attr="onclick='window.location.href=\'/home?username=' + ${usuario.username} + '\';'">
     Menú
 </button>
@@ -143,19 +145,40 @@
                             const modalBody = document.querySelector('.modal-body');
                             modalBody.appendChild(feedback); 
                         }
-
                         if (respuesta.startsWith(respuestaCorrecta)) {
-                            feedback.textContent = "¡Correcto!";
-                            feedback.style.color = 'green';
+    feedback.textContent = "¡Correcto!";
+    feedback.style.color = 'green';
 
-                            // Incrementar el puntaje en el frontend
-                            const puntosElemento = document.getElementById("userPoints");
-                            let puntosActuales = parseInt(puntosElemento.textContent, 10); 
-                            puntosElemento.textContent = puntosActuales + 1; 
-                        } else {
-                            feedback.textContent = "Incorrecto. La respuesta correcta es: " + respuestaCorrecta;
-                            feedback.style.color = 'red';
-                        }
+    // Incrementar el puntaje en el frontend
+    const puntosElemento = document.getElementById("userPoints");
+    let puntosActuales = parseInt(puntosElemento.textContent, 10);
+    puntosElemento.textContent = puntosActuales + 1;
+
+    const userInfoElement = document.getElementById("user-info");
+    const userId = userInfoElement.getAttribute("data-user-id");
+    const puntosGanados = 1;
+
+    // Enviar actualización del puntaje al backend
+    fetch(`/api/usuarios/${userId}/puntos?puntos=${puntosGanados}`, {
+        method: 'PUT'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Error al actualizar el puntaje");
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Puntaje actualizado:", data);
+    })
+    .catch(error => {
+        console.error("Error al actualizar el puntaje:", error);
+    });
+} else {
+    feedback.textContent = "Incorrecto. La respuesta correcta es: " + respuestaCorrecta;
+    feedback.style.color = 'red';
+}
+
 
                         setTimeout(() => {
                             $('#questionModal').modal('hide');
@@ -199,13 +222,13 @@
     }, 2000);
 }
         const images = [
+            '/img/Tecnologia.png',
             '/img/Arte.png',
             '/img/Ciencia.png',
             '/img/CineEntretenimiento.png',
             '/img/Deporte.png',
             '/img/Geografia.png',
-            '/img/Historia.png',
-            '/img/Tecnologia.png'
+            '/img/Historia.png'
         ];
     
         let index = 0;
@@ -218,10 +241,6 @@
         // Cambiar el fondo cada 5 segundos
         changeBackground();
         setInterval(changeBackground, 5000);
-
-    
-
-
 
 </script>
 
