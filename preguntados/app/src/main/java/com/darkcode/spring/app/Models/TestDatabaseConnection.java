@@ -12,7 +12,7 @@ public class TestDatabaseConnection implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Conexión a la base de datos probada correctamente.");
+        System.out.println("Conexión a la base de datos establecida correctamente.");
     }
 }
 

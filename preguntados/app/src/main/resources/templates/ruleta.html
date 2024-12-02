@@ -4,93 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Trivia</title>
     <script src="js/Winwheel.min.js"></script>
     <script src="js/TweenMax.min.js"></script>
     <script src="js/jQuery-2.1.4.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <style>
-        body {
-            background-size: cover;
-            background-attachment: fixed;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-    
-        .wheel-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            width: 600px;
-        }
-    
-        .btn-girar {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1;
-            width: 80px; /* Reduce width */
-            height: 80px; /* Make height same as width for a circle */
-            font-size: 16px; /* Adjust font size */
-            color: #fff;
-            background-color: #cacfd2; /* Background color for button */
-            border: none;
-            border-radius: 50%; /* Make it round */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            outline: none; /* Remove focus outline */
-        }
-    
-        /* Remove Bootstrap's button effect */
-        .btn-girar:active, .btn-girar:focus {
-            background-color: #cacfd2 !important; /* Prevent Bootstrap from applying styles */
-            box-shadow: none !important; /* Remove any shadow effect */
-        }
-    
-        /* Remove focus outline (important for accessibility but can be adjusted if needed) */
-        .btn-girar:focus {
-            outline: none;
-        }
-    
-        /* Prevent button from showing "focus" behavior */
-        .btn-girar:focus-visible {
-            outline: none;
-        }
-    
-        .overlay-category {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            font-size: 3em;
-            text-align: center;
-            z-index: 10;
-            display: none; /* Initially hidden */
-        }
-    
-        canvas {
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/ruleta.css">
     
     
 </head>
 <body>
     <div class="user-info">
-        <h3>Bienvenido, <span th:text="${usuario.username}"></span>!</h3>
-        <p>Puntos: <span id="userPoints" th:text="${usuario.puntos}"></span></p>
+            <h3 class="welcome-text">Bienvenido, <span th:text="${usuario.username}"></span>!</h3>
+            <p class="points-text">Puntos: <span id="userPoints" th:text="${usuario.puntos}"></span></p>
+        <button class="menu-button" 
+        th:attr="onclick='window.location.href=\'/home?username=' + ${usuario.username} + '\';'">
+    Menú
+</button>
     </div>
     
 <div class="wheel-container">
@@ -99,25 +29,29 @@
 </div>
 
 <!-- Overlay to display the selected category -->
+<!-- Overlay para mostrar la categoría -->
 <div class="overlay-category" id="overlayCategory">
     <div id="categoryText">Categoría</div>
 </div>
+
 <!-- Modal para mostrar la pregunta -->
-<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="questionModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="questionModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="questionModalLabel">Pregunta</h5>
             </div>
             <div class="modal-body">
-                <p id="questionText">Cargando pregunta...</p>
-                <ul id="answersList" style="list-style-type: none; padding: 0;">
+                <p id="questionText" class="question-text">Cargando pregunta...</p>
+                <ul id="answersList" class="answers-list">
                     <!-- Respuestas se generarán dinámicamente -->
                 </ul>
             </div>
+           
         </div>
     </div>
 </div>
+
 
 <script>
     var miRuleta = new Winwheel({
@@ -125,13 +59,13 @@
     'outerRadius' : 270,
     'segments': [
 
-        {'fillStyle': '#a9ec2c', 'text': 'Ciencia'},         
-        {'fillStyle': '#ec2c7b', 'text': 'Entretenimiento'}, 
-        {'fillStyle': '#9b2cec', 'text': 'Geografia'},       
-        {'fillStyle': '#ffa08b', 'text': 'Historia'},       
-        {'fillStyle': '#ec8f2c', 'text': 'Deporte'},         
-        {'fillStyle': '#2ceca0', 'text': 'Tecnologia'},   
-        {'fillStyle': '#2ceca0', 'text': 'Arte'}      
+        {'fillStyle': '#80fd90', 'text': 'Ciencia'},         
+        {'fillStyle': '#80fdc4', 'text': 'Entretenimiento'}, 
+        {'fillStyle': '#80ccfd', 'text': 'Geografia'},       
+        {'fillStyle': '#80a1fd', 'text': 'Historia'},       
+        {'fillStyle': '#9b80fd', 'text': 'Deporte'},         
+        {'fillStyle': '#c880fd', 'text': 'Tecnologia'},   
+        {'fillStyle': '#f280fd', 'text': 'Arte'}       
     ],
     'animation': {
         'type': 'spinToStop',
@@ -162,112 +96,131 @@
     var SegmentoSeleccionado = miRuleta.getIndicatedSegment();
     var categoria = SegmentoSeleccionado.text;
 
-    $.ajax({
-        url: `/api/pregunta/${categoria}`, 
-        type: 'GET',
-        success: function(response) {
-            const lines = response.split('\n');
-            const pregunta = lines[0]; 
-            const respuestas = lines.slice(1, 5); 
-            const respuestaCorrecta = lines.find(line => line.startsWith('Respuesta correcta:')).split(':')[1].trim();
+    // Mostrar la categoría seleccionada en la superposición
+    const overlayCategory = document.getElementById("overlayCategory");
+    const categoryText = document.getElementById("categoryText");
+    categoryText.textContent = `Categoría: ${categoria}`;
+    overlayCategory.style.display = "flex"; // Mostrar superposición
 
-            document.getElementById("questionText").innerText = pregunta;
-
-            const answersList = document.getElementById("answersList");
-            answersList.innerHTML = '';
-
-            respuestas.forEach((respuesta) => {
-    const listItem = document.createElement('li');
-    const button = document.createElement('button');
-    button.textContent = respuesta;
-    button.classList.add('btn', 'btn-primary', 'btn-block');
-    button.style.marginTop = '10px';
-
-    const feedback = document.createElement('p');
-            feedback.style.marginTop = '20px';
-        feedback.style.fontWeight = 'bold';
-
-        button.onclick = function() {
-    const buttons = document.querySelectorAll('#answersList button');
-    buttons.forEach(btn => btn.disabled = true);
-
-    let feedback = document.getElementById('feedbackMessage');
-    if (!feedback) {
-        feedback = document.createElement('p'); 
-        feedback.id = 'feedbackMessage';
-        feedback.style.marginTop = '20px';
-        feedback.style.fontWeight = 'bold';
-        feedback.style.fontSize = '16px'; 
-        feedback.style.textAlign = 'center'; 
-        const modalBody = document.querySelector('.modal-body');
-        modalBody.appendChild(feedback); 
-    }
-
-    if (respuesta.startsWith(respuestaCorrecta)) {
-        feedback.textContent = "¡Correcto! 🎉";
-        feedback.style.color = 'green';
-
-        // Incrementar el puntaje en el frontend
-        const puntosElemento = document.getElementById("userPoints");
-        let puntosActuales = parseInt(puntosElemento.textContent, 10); // Convertir texto a número
-        puntosElemento.textContent = puntosActuales + 1; // Incrementar el puntaje
-
-    } else {
-        feedback.textContent = "Incorrecto. La respuesta correcta es: " + respuestaCorrecta;
-        feedback.style.color = 'red';
-    }
+    // Retraso para ocultar la superposición y proceder a cargar la pregunta
     setTimeout(() => {
- 
-    $('#questionModal').modal('hide');
-   
-    const modalElement = document.getElementById('questionModal');
-    modalElement.classList.remove('show');
-    modalElement.style.display = 'none';
+        overlayCategory.style.display = "none"; // Ocultar superposición
 
-  
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-        backdrop.remove();
-    }
+        // Lógica para cargar la pregunta desde el backend
+        $.ajax({
+            url: `/api/pregunta/${categoria}`, 
+            type: 'GET',
+            success: function(response) {
+                const lines = response.split('\n');
+                const pregunta = lines[0]; 
+                const respuestas = lines.slice(1, 5); 
+                const respuestaCorrecta = lines.find(line => line.startsWith('Respuesta correcta:')).split(':')[1].trim();
 
-    document.body.classList.remove('modal-open');
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
+                document.getElementById("questionText").innerText = pregunta;
 
-    // Limpiar feedback
-    feedback.remove();
+                const answersList = document.getElementById("answersList");
+                answersList.innerHTML = '';
 
-    // Reiniciar ruleta
-    miRuleta.stopAnimation(false);
-    miRuleta.rotationAngle = 0;
-    miRuleta.draw();
-    dibujarIndicador();
-}, 3000);
+                respuestas.forEach((respuesta) => {
+                    const listItem = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.textContent = respuesta;
+                    button.classList.add('btn', 'btn-primary', 'btn-block');
+                    button.style.marginTop = '10px';
 
-};
+                    button.onclick = function() {
+                        const buttons = document.querySelectorAll('#answersList button');
+                        buttons.forEach(btn => btn.disabled = true);
 
+                        let feedback = document.getElementById('feedbackMessage');
+                        if (!feedback) {
+                            feedback = document.createElement('p'); 
+                            feedback.id = 'feedbackMessage';
+                            feedback.style.marginTop = '20px';
+                            feedback.style.fontWeight = 'bold';
+                            feedback.style.fontSize = '16px'; 
+                            feedback.style.textAlign = 'center'; 
+                            const modalBody = document.querySelector('.modal-body');
+                            modalBody.appendChild(feedback); 
+                        }
 
+                        if (respuesta.startsWith(respuestaCorrecta)) {
+                            feedback.textContent = "¡Correcto!";
+                            feedback.style.color = 'green';
 
+                            // Incrementar el puntaje en el frontend
+                            const puntosElemento = document.getElementById("userPoints");
+                            let puntosActuales = parseInt(puntosElemento.textContent, 10); 
+                            puntosElemento.textContent = puntosActuales + 1; 
+                        } else {
+                            feedback.textContent = "Incorrecto. La respuesta correcta es: " + respuestaCorrecta;
+                            feedback.style.color = 'red';
+                        }
 
+                        setTimeout(() => {
+                            $('#questionModal').modal('hide');
+                            const modalElement = document.getElementById('questionModal');
+                            modalElement.classList.remove('show');
+                            modalElement.style.display = 'none';
+                            const backdrop = document.querySelector('.modal-backdrop');
+                            if (backdrop) {
+                                backdrop.remove();
+                            }
 
+                            document.body.classList.remove('modal-open');
+                            document.body.style.overflow = '';
+                            document.body.style.paddingRight = '';
+                            feedback.remove();
 
-    listItem.appendChild(button);
-    answersList.appendChild(listItem);
-});
+                            // Reiniciar ruleta
+                            miRuleta.stopAnimation(false);
+                            miRuleta.rotationAngle = 0;
+                            miRuleta.draw();
+                            dibujarIndicador();
+                        }, 3000);
+                    };
 
-            $('#questionModal').modal('show');
-        },
-        error: function(error) {
-            console.error("Error al obtener la pregunta:", error);
-            alert("No se pudo obtener la pregunta. Por favor, intenta nuevamente.");
-        }
-    });
+                    listItem.appendChild(button);
+                    answersList.appendChild(listItem);
+                });
 
-    miRuleta.stopAnimation(false);
-    miRuleta.rotationAngle = 0;
-    miRuleta.draw();
-    dibujarIndicador();
+                $('#questionModal').modal('show');
+            },
+            error: function(error) {
+                console.error("Error al obtener la pregunta:", error);
+                alert("No se pudo obtener la pregunta. Por favor, intenta nuevamente.");
+            }
+        });
+
+        miRuleta.stopAnimation(false);
+        miRuleta.rotationAngle = 0;
+        miRuleta.draw();
+        dibujarIndicador();
+    }, 2000);
 }
+        const images = [
+            '/img/Arte.png',
+            '/img/Ciencia.png',
+            '/img/CineEntretenimiento.png',
+            '/img/Deporte.png',
+            '/img/Geografia.png',
+            '/img/Historia.png',
+            '/img/Tecnologia.png'
+        ];
+    
+        let index = 0;
+    
+        function changeBackground() {
+            document.body.style.backgroundImage = `url('${images[index]}')`;
+            index = (index + 1) % images.length;
+        }
+    
+        // Cambiar el fondo cada 5 segundos
+        changeBackground();
+        setInterval(changeBackground, 5000);
+
+    
+
 
 
 </script>

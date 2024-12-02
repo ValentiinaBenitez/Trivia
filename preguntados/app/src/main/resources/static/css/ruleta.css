@@ -1,0 +1,247 @@
+ body {
+            background-size: 40%;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-position: center;
+        background-repeat: repeat-x;
+        overflow: hidden;
+        transition: background-image 1s ease-in-out;
+        }
+    
+        .wheel-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 600px;
+        }
+    
+        .btn-girar {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            width: 80px; /* Reduce width */
+            height: 80px; /* Make height same as width for a circle */
+            font-size: 16px; /* Adjust font size */
+            color: #fff;
+            background-color: #cacfd2; /* Background color for button */
+            border: none;
+            border-radius: 50%; /* Make it round */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            outline: none; /* Remove focus outline */
+        }
+    
+        /* Remove Bootstrap's button effect */
+        .btn-girar:active, .btn-girar:focus {
+            background-color: #cacfd2 !important; /* Prevent Bootstrap from applying styles */
+            box-shadow: none !important; /* Remove any shadow effect */
+        }
+    
+        /* Remove focus outline (important for accessibility but can be adjusted if needed) */
+        .btn-girar:focus {
+            outline: none;
+        }
+    
+        /* Prevent button from showing "focus" behavior */
+        .btn-girar:focus-visible {
+            outline: none;
+        }
+    
+        .overlay-category {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            font-size: 3em;
+            text-align: center;
+            z-index: 10;
+            display: none; /* Initially hidden */
+        }
+    
+        canvas {
+            display: block;
+        }
+        .menu-button {
+    display: block;
+    width: 100%; /* Botón amplio */
+    margin: 10px 0; /* Espaciado entre botones */
+    padding: 15px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño del texto */
+    font-weight: bold; /* Texto en negrita */
+    color: #ffffff; /* Texto blanco */
+    background-color: #6c757d; /* Color de fondo pálido */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de mano */
+    transition: all 0.3s ease; /* Transición suave para hover */
+}
+
+.menu-button:hover {
+    background-color: #5a6268; /* Color más oscuro al pasar el mouse */
+    transform: translateY(-3px); /* Eleva el botón */
+}
+
+.menu-button:active {
+    background-color: #495057; /* Color más oscuro al presionar */
+    transform: translateY(1px); /* Devuelve el botón */
+}
+/* Contenedor general */
+.user-info {
+    text-align: center; /* Centrar texto */
+    margin-bottom: 20px; /* Espaciado inferior */
+    font-family: 'Arial', sans-serif; /* Fuente minimalista */
+}
+
+/* Estilo para el saludo (h3) */
+.welcome-text {
+    font-size: 24px; /* Tamaño de texto más grande */
+    color: #333; /* Color gris oscuro */
+    margin-bottom: 10px; /* Espaciado debajo del saludo */
+    font-weight: bold; /* Negrita */
+    letter-spacing: 1px; /* Espaciado entre letras */
+}
+
+/* Estilo para los puntos */
+.points-text {
+    font-size: 18px; /* Tamaño más pequeño que el saludo */
+    color: #6c757d; /* Gris suave */
+    font-weight: 500; /* Peso del texto intermedio */
+}
+
+/* Opcional: estilos para los números o datos dinámicos */
+.points-text span,
+.welcome-text span {
+    color: #000000; /* Azul para resaltar */
+    font-weight: bold; /* Negrita para destacar */
+}
+
+
+
+/* Overlay de la categoría */
+.overlay-category {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente */
+    color: #fff;
+    font-size: 2em;
+    text-align: center;
+    z-index: 1050;
+    display: none; /* Oculto por defecto */
+}
+
+/* Modal de preguntas */
+.modal-content {
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    padding: 20px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd; /* Línea divisoria */
+    padding-bottom: 10px;
+}
+
+.modal-title {
+    font-size: 1.5em;
+    color: #333;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.question-text {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.answers-list {
+    list-style-type: none; /* Elimina viñetas */
+    padding: 0;
+    margin: 0;
+}
+
+.answers-list li {
+    margin-bottom: 10px;
+}
+
+.answers-list button {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #fcae54; /* Azul */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.answers-list button:hover {
+    background-color: #e98c40; /* Azul más oscuro */
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #ddd; /* Línea divisoria */
+    padding-top: 10px;
+}
+
+.btn-close-modal {
+    background-color: #6c757d; /* Gris */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-close-modal:hover {
+    background-color: #5a6268; /* Gris más oscuro */
+}

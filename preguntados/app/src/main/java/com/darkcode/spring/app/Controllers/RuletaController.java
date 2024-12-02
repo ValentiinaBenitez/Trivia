@@ -19,12 +19,14 @@ public class RuletaController {
     public String mostrarRuleta(@RequestParam String username, Model model) {
         Usuario usuario = usuarioRepository.findByUsername(username);
         if (usuario != null) {
-            model.addAttribute("usuario", usuario);
-            return "ruleta"; // Retorna el archivo ruleta.html
+            model.addAttribute("usuario", usuario); // Incluye el usuario en el modelo
+            return "ruleta"; 
         } else {
-            return "redirect:/MainPage";
+            return "redirect:/MainPage"; // Redirige si no se encuentra el usuario
         }
     }
+    
+    
 
 
 }

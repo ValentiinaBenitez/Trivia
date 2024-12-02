@@ -4,23 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
+    <style>
+        /* Estilo general */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5; /* Fondo pálido */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .register-container {
+            background-color: #ffffff; /* Fondo blanco */
+            padding: 20px 30px;
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            width: 100%;
+            max-width: 400px; /* Ancho máximo */
+            text-align: center;
+        }
+
+        h2 {
+            color: #333; /* Título gris oscuro */
+            margin-bottom: 20px; /* Espaciado */
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            color: #666; /* Texto gris claro */
+            margin-bottom: 5px;
+            text-align: left; /* Alinear texto a la izquierda */
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd; /* Borde gris claro */
+            border-radius: 5px; /* Bordes redondeados */
+            font-size: 14px;
+            width: 100%; /* Ancho completo */
+        }
+
+        input:focus {
+            border-color: #007bff; /* Azul al enfocar */
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Sombra al enfocar */
+        }
+
+        button {
+            background-color: #248a3b; /* Botón verde */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #19702c; /* Verde más oscuro al pasar el mouse */
+            transform: translateY(-2px); /* Eleva el botón */
+        }
+
+        button:active {
+            background-color: #125e24; /* Verde más oscuro al presionar */
+            transform: translateY(1px); /* Devuelve el botón */
+        }
+
+        .back-link {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #007bff; /* Azul */
+            text-decoration: none; /* Sin subrayado */
+        }
+
+        .back-link:hover {
+            text-decoration: underline; /* Subrayado al pasar el mouse */
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Registro de Usuario</h2>
-
-    <!-- Mostrar el mensaje de error -->
-    <div th:if="${error}" style="color: red; margin-bottom: 15px;">
-        <p th:text="${error}"></p>
+    <div class="register-container">
+        <h2>Registro</h2>
+        <form th:action="@{/registrarse}" method="post">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Registrarse</button>
+        </form>
+            <br>
+        <div>
+            <a href="/MainPage" class="back-link">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
     </div>
-
-    <form action="/registro" method="post">
-        <label for="username">Usuario:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Registrarse</button>
-    </form>
 </body>
 </html>
