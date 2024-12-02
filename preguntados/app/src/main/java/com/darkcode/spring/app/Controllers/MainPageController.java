@@ -13,6 +13,5 @@ public class MainPageController {
 
     @GetMapping("/Jugar")
     public String redirectToRuleta() {
-        return "redirect:/ruleta"; // Redirige a RuletaController
-    }
+        return "redirect:/ruleta";}
 }

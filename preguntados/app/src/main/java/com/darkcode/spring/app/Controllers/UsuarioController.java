@@ -29,19 +29,19 @@ public class UsuarioController {
         return usuarioRepository.findAll();
     }
 
-    // Método para guardar un usuario
+   
     public Usuario guardarUsuario(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
      @PutMapping("/usuarios/{id}/puntos")
     public ResponseEntity<Usuario> actualizarPuntaje(@PathVariable Long id, @RequestParam int puntos) {
-        // Buscar al usuario por su ID
+      
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
         if (optionalUsuario.isPresent()) {
             Usuario usuario = optionalUsuario.get();
-            // Actualizar el puntaje del usuario
+           
             usuario.setPuntos(usuario.getPuntos() + puntos);
-            // Guardar los cambios en la base de datos
+          
             usuarioRepository.save(usuario);
             return ResponseEntity.ok(usuario);
         } else {

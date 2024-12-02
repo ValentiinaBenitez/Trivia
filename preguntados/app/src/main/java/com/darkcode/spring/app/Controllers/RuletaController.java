@@ -21,11 +21,11 @@ public class RuletaController {
     Optional<Usuario> optionalUsuario = usuarioRepository.findByUsername(username);
     if (optionalUsuario.isPresent()) {
         Usuario usuario = optionalUsuario.get();
-        model.addAttribute("usuario", usuario); // Pasar el objeto 'usuario' al modelo
-        return "ruleta"; // Renderizar la plantilla 'ruleta.html'
+        model.addAttribute("usuario", usuario); 
+        return "ruleta"; 
     } else {
         model.addAttribute("error", "Usuario no encontrado");
-        return "error"; // Mostrar una página de error si el usuario no existe
+        return "error"; 
     }
 }
 

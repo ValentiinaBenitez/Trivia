@@ -16,13 +16,13 @@ public class RegistroController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Mostrar la página de registro
+   
     @GetMapping("/registrarse")
     public String mostrarPaginaRegistro() {
-        return "registro"; // archivo registro.html en templates
+        return "registro"; 
     }
 
-    // Manejar el formulario de registro
+   
     @PostMapping("/registro")
     public String registrarUsuario(@Validated Usuario usuario, BindingResult result, Model model) {
     if (result.hasErrors()) {

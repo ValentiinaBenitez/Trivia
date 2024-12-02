@@ -19,7 +19,6 @@ public class Usuario {
     @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }

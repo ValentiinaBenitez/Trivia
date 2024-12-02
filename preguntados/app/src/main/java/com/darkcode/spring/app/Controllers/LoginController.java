@@ -28,7 +28,7 @@ public class LoginController {
         Optional<Usuario> optionalUsuario = usuarioRepository.findByUsername(username);
     
         if (optionalUsuario.isPresent()) {
-            Usuario usuario = optionalUsuario.get(); // Obtén el objeto Usuario del Optional
+            Usuario usuario = optionalUsuario.get(); 
             if (usuario.getPassword().equals(password)) {
                 model.addAttribute("usuario", usuario);
                 return "redirect:/home?username=" + username;
@@ -50,11 +50,11 @@ public String home(@RequestParam String username, Model model) {
     Optional<Usuario> optionalUsuario = usuarioRepository.findByUsername(username);
     if (optionalUsuario.isPresent()) {
         Usuario usuario = optionalUsuario.get();
-        model.addAttribute("usuario", usuario); // Asegúrate de pasar el objeto 'usuario'
-        return "home"; // Renderiza la plantilla 'home.html'
+        model.addAttribute("usuario", usuario); 
+        return "home"; 
     } else {
         model.addAttribute("error", "Usuario no encontrado");
-        return "error"; // Muestra una página de error si el usuario no existe
+        return "error"; 
     }
 }
 
