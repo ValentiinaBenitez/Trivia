@@ -13,9 +13,9 @@
         <a th:href="@{/ruleta(username=${usuario.username})}">
             <button type="button" class="menu-button">Juego Individual</button>
         </a>
-        <a th:href="@{/multijugador}">
+        <a th:href="@{/multijugador(username=${usuario.username})}">
             <button type="button" class="menu-button">Juego Multijugador</button>
-        </a>
+        </a>        
         <a th:href="@{/MainPage}">
             <button type="button" class="menu-button">Cerrar Sesión</button>
         </a>

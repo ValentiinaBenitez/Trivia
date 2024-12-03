@@ -13,7 +13,7 @@
 </head>
 <body>
     <div class="user-info">
-        <h3 class="welcome-text">Bienvenido, <span th:text="${usuario != null ? usuario.username : 'Invitado'}"></span>!</h3>
+        <h3 class="welcome-text">Jugador: <span th:text="${usuario != null ? usuario.username : 'Invitado'}"></span></h3>
         <p class="points-text">Puntos: <span id="userPoints" th:text="${usuario != null ? usuario.puntos : 0}"></span></p>
         <div id="user-info" th:data-user-id="${usuario != null ? usuario.id : 0}"></div>
             <button class="menu-button" 
